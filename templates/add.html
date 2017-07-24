@@ -1,0 +1,76 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">
+{% endblock %}
+
+{% block content %}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">SUK Authentication server</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('signup') }}">Add admin</a></li>
+            <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href="{{ url_for('search') }}">Search</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+           <li class="active"><a href="{{ url_for('add') }}">Add <span class="sr-only">(current)</span></a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href="{{ url_for('upload') }}">Upload</a></li>
+          </ul>
+
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Welcome, {{ name }}</h1>
+
+          <div class="container">
+
+            <form class="form form-horizontal" method="POST" action="/add">
+              {{ form.hidden_tag() }}
+              {{ wtf.form_field(form.macid) }}
+              {{ wtf.form_field(form.Name) }}
+              {{ wtf.form_field(form.PRN) }}
+              {{ wtf.form_field(form.department) }}
+              {{ wtf.form_field(form.Designation) }}
+              {{ wtf.form_field(form.Phone) }}
+              {{ wtf.form_field(form.email) }}
+              {{ wtf.form_field(form.D_O_E) }}
+              <button class="btn btn-lg btn-primary btn-block" type="submit">Add</button>
+            </form>
+
+          </div> <!-- /container -->
+
+
+        </div>
+      </div>
+    </div>
+{% endblock %}

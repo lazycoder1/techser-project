@@ -1,0 +1,129 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">
+{% endblock %}
+
+{% block content %}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">SUK Authentication server</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('signup') }}">Add admin</a></li>
+            <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+           <li class="active"><a href="{{ url_for('search') }}">Search <span class="sr-only">(current)</span></a></li>
+
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href="{{ url_for('add') }}">Add</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href="{{ url_for('upload') }}">Upload</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Welcome, {{ name }}</h1>
+
+          <div class="container">
+
+            <form class="form form-horizontal" method="POST" action="/search">
+              {{ form.hidden_tag() }}
+              {{ wtf.form_field(form.macid) }}
+              {{ wtf.form_field(form.Name) }}
+              {{ wtf.form_field(form.PRN) }}
+              {{ wtf.form_field(form.department) }}
+              {{ wtf.form_field(form.Designation) }}
+              {{ wtf.form_field(form.Phone) }}
+              {{ wtf.form_field(form.email) }}
+              {{ wtf.form_field(form.D_O_E) }}
+              <button class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
+            </form>
+
+          </div> <!-- /container -->
+
+
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <td>Mac ID</td>
+              <td>Name</td>
+              <td>PRN</td>
+              <td>Phone</td>
+              <td>email</td>
+              <td>Department</td>
+              <td>Designation</td>
+              <td>Expiry Date</td>
+              {% for post in posts.items %}
+              <tr>
+                <p>
+                <td>{{ post.username }} </td>
+                <td>{{ post.Name }}</td>
+                <td>{{ post.PRN }}</td>
+                <td>{{ post.Phone }}</td>
+                <td>{{ post.E_mail }}</td>
+                <td>{{ post.Department }}</td>
+                <td>{{ post.Designation }}</td>
+                <td>{{ post.D_O_E }}</td>
+                <td>{% if post.op == ':=' %}
+                  <form action="/toggle" method="get">
+                    <button name="toggle" class='btn btn-sm btn-default btn-block' type="submit" value={{ post.id }}>Disable</button>
+                  </form>
+                {% else %}
+                  <form action="/toggle" method="get">
+                    <button name="toggle" class='btn btn-sm btn-warning btn-block' type="submit" value={{ post.id }}>Enable</button>
+                  </form>
+                {% endif %}</td>
+                <td> <form action="/edit" method="get">
+                      <button name="edit" class='btn btn-sm btn-default btn-block' type="submit" value={{ post.id }}>Edit</button>
+                </form> </td>
+                <td> <form action="/delete" method="get">
+                      <button name="delete" class='btn btn-sm btn-default btn-block' type="submit" value="{{ post.id }}">Delete</button>
+                </form> </td>
+                </p>
+              </tr>
+            {% endfor %}
+            </table>
+            {% if posts.has_prev %}<a href="{{ url_for('search', page=posts.prev_num) }}">&lt;&lt; Previous</a>
+            {% else %}&lt;&lt; Previous{% endif %} |
+            {% if posts.has_next %}<a href="{{ url_for('search', page=posts.next_num) }}">Next &gt;&gt;</a>
+            {% else %}Next &gt;&gt;{% endif %}
+          </div>
+          <br>
+          <form action="/delete_all" method="get">
+            <button name='mode' class='btn btn-lg btn-warning btn-block' type="submit" value="{{ posts.page }}" onclick="return confirm('Are you sure?')">Delete This page</button>
+          </form>
+          <br>
+          <form action="/delete_all" method="get">
+            <button name='mode' class='btn btn-lg btn-danger btn-block' type="submit" value="delete_all" onclick="return confirm('Are you sure?')">Delete all records for the given search query</button>
+          </form>
+        </div>
+      </div>
+    </div>
+{% endblock %}

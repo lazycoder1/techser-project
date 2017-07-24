@@ -1,0 +1,9 @@
+Flask
+flask-bootstrap
+Flask-bootstrap
+flask-WTF
+WTForms
+flask-SQLAlchemy
+flask-login
+mysql-connector==2.1.4
+pandas
